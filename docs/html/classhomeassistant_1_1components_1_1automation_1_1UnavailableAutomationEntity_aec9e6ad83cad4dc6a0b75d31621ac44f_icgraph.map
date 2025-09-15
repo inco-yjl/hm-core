@@ -1,0 +1,17 @@
+<map id="homeassistant.components.automation.UnavailableAutomationEntity.async_trigger" name="homeassistant.components.automation.UnavailableAutomationEntity.async_trigger">
+<area shape="rect" id="Node000001" title=" " alt="" coords="1672,61,1976,101"/>
+<area shape="rect" id="Node000002" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a9b47fa2d2768d8fb0b42dc6eae09301c" title=" " alt="" coords="1339,54,1624,109"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="1658,84,1624,84,1624,79,1658,79"/>
+<area shape="rect" id="Node000003" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a81a03d7094a64b4142e15a8b9b7bb144" title=" " alt="" coords="1005,54,1291,109"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="1325,84,1291,84,1291,79,1325,79"/>
+<area shape="rect" id="Node000004" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a4a789f71a6437b57ebf2ad3d24c245b5" title=" " alt="" coords="339,61,624,101"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="991,77,957,76,815,74,672,76,624,77,624,72,672,71,815,69,957,71,992,72"/>
+<area shape="rect" id="Node000007" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a8f7d3e14eb79265f66facd92bf5959a2" title=" " alt="" coords="672,86,957,141"/>
+<area shape="poly" id="edge7_Node000003_Node000007" title=" " alt="" coords="992,99,958,102,957,97,991,94"/>
+<area shape="rect" id="Node000005" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a4a09c52547cb1788c2d7fcc6579d2317" title=" " alt="" coords="5,29,291,69"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="325,69,290,66,291,60,325,64"/>
+<area shape="rect" id="Node000006" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a9250bf2ee600ab5b09bd91f1cd46ee8e" title=" " alt="" coords="5,93,291,133"/>
+<area shape="poly" id="edge6_Node000004_Node000006" title=" " alt="" coords="325,99,291,102,290,97,325,94"/>
+<area shape="poly" id="edge5_Node000005_Node000005" title=" " alt="" coords="205,18,185,11,148,8,116,10,96,15,89,21,92,28,87,30,84,20,93,10,115,5,148,3,186,5,207,13"/>
+<area shape="poly" id="edge8_Node000007_Node000004" title=" " alt="" coords="658,101,624,98,624,92,659,96"/>
+</map>

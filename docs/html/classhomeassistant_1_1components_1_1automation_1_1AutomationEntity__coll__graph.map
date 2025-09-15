@@ -1,0 +1,13 @@
+<map id="homeassistant.components.automation.AutomationEntity" name="homeassistant.components.automation.AutomationEntity">
+<area shape="rect" id="Node000001" title=" " alt="" coords="125,183,410,223"/>
+<area shape="rect" id="Node000002" href="$classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity.html" title=" " alt="" coords="14,93,299,133"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="193,140,245,180,242,185,190,144"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,108,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="81,38,138,91,135,95,77,42"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="132,5,181,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="159,44,159,93,154,93,154,44"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="206,5,299,31"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="233,42,178,95,174,91,229,38"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="324,101,435,126"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="355,137,293,185,290,180,352,132"/>
+</map>
