@@ -36,5 +36,6 @@ async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_setup(hass, config):
+    """Set the integration."""
     hass.states.async_set(f"{DOMAIN}.world", "Ren")
     return True
