@@ -1,0 +1,38 @@
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+logger:
+  default: info
+  logs:
+    homeassistant.components.cloud: debug
+
+# Example configuration.yaml entry
+demo:
+  - air_quality
+
+air_quality:
+  - platform: demo
+    alert_monitor:
+      target_entity: air_quality.demo_air_quality_test
+      rules:
+        - type: threshold
+          pollutant: particulate_matter_2_5
+          threshold: 25
+        - type: threshold
+          pollutant: particulate_matter_10
+          threshold: 50
+      notifications:
+        - type: hass_notify
+          service_id: persistent_notification
+        - type: logging
+      test_check_interval: 3  # test (seconds)
+      test_cooldown_time: 10  # test (seconds)
