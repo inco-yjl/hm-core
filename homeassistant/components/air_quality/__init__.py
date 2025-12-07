@@ -15,11 +15,18 @@ from homeassistant.helpers.entity_component import EntityComponent
 from homeassistant.helpers.typing import ConfigType, StateType
 from homeassistant.util.hass_dict import HassKey
 
+from .alert import (
+    AlertMonitor,
+    HassNotificationHandler,
+    LoggingNotificationHandler,
+    ThresholdAlertRule,
+)
 from .const import DOMAIN
 
 _LOGGER: Final = logging.getLogger(__name__)
 
 DATA_COMPONENT: HassKey[EntityComponent[AirQualityEntity]] = HassKey(DOMAIN)
+DATA_ALERT_MONITOR: HassKey[AlertMonitor] = HassKey("air_quality_alert_monitor")
 ENTITY_ID_FORMAT: Final = DOMAIN + ".{}"
 PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA
 PLATFORM_SCHEMA_BASE = cv.PLATFORM_SCHEMA_BASE
@@ -56,11 +63,89 @@ PROP_TO_ATTR: Final[dict[str, str]] = {
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Set up the air quality component."""
+
     component = hass.data[DATA_COMPONENT] = EntityComponent[AirQualityEntity](
         _LOGGER, DOMAIN, hass, SCAN_INTERVAL
     )
     await component.async_setup(config)
+
+    # Set up alert monitor
+    alert_monitor = hass.data[DATA_ALERT_MONITOR] = AlertMonitor(hass)
+
+    domain_config_list = config.get(DOMAIN)
+    if isinstance(domain_config_list, list):
+
+        for entry_config in domain_config_list:
+            if entry_config.get("alert_monitor"):
+                alert_config = entry_config["alert_monitor"]
+                # Set alert monitor config
+                set_alert_monitor_config(hass, alert_monitor, alert_config)
+
+                # Start monitoring
+                if alert_monitor.is_monitoring_configured():
+                    await alert_monitor.start_monitoring()
+                else:
+                    _LOGGER.warning("Air quality alert monitoring configuration is incomplete")
+                break
+
+
     return True
+
+def set_alert_monitor_config(hass: HomeAssistant, alert_monitor: AlertMonitor, alert_config: dict) -> None:
+    """Set the alert monitor config."""
+
+    target_entity_id = alert_config.get("target_entity")
+    if target_entity_id:
+        alert_monitor.set_target_entity(target_entity_id)
+
+    for rule_cfg in alert_config.get("rules", []):
+        rule_type = rule_cfg.get("type")
+
+        if rule_type == "threshold":
+            pollutant = rule_cfg.get("pollutant")
+            threshold = rule_cfg.get("threshold")
+            if pollutant and threshold is not None:
+                rule = ThresholdAlertRule(pollutant, float(threshold))
+                alert_monitor.add_rule(rule)
+
+    for handler_cfg in alert_config.get("notifications", []):
+        handler_type = handler_cfg.get("type")
+
+        if handler_type == "hass_notify":
+            service_id = handler_cfg.get("service_id")
+            if service_id:
+                handler = HassNotificationHandler(hass, service_id)
+                alert_monitor.add_notification_handler(handler)
+
+        elif handler_type == "logging":
+            handler = LoggingNotificationHandler()
+            alert_monitor.add_notification_handler(handler)
+
+    test_interval_seconds = alert_config.get("test_check_interval")
+    if test_interval_seconds is not None:
+        try:
+            seconds = int(test_interval_seconds)
+            if seconds > 0:
+                check_interval = timedelta(seconds=seconds)
+                alert_monitor.set_check_interval(check_interval)
+                _LOGGER.info("Alert monitoring using test interval: %s seconds", seconds)
+            else:
+                _LOGGER.error("Invalid value for test_check_interval (not positive). Using default")
+        except ValueError:
+            _LOGGER.error("Invalid value for test_check_interval. Using default")
+
+    test_cooldown_seconds = alert_config.get("test_cooldown_time")
+    if test_cooldown_seconds is not None:
+        try:
+            seconds = int(test_cooldown_seconds)
+            if seconds > 0:
+                cooldown_interval = timedelta(seconds=seconds)
+                alert_monitor.set_cooldown_time(cooldown_interval)
+                _LOGGER.info("Alert monitoring using test cooldown time: %s seconds", seconds)
+            else:
+                _LOGGER.error("Invalid value for test_cooldown_time (not positive). Using default")
+        except ValueError:
+            _LOGGER.error("Invalid value for test_cooldown_time. Using default")
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
