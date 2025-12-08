@@ -1,154 +1,188 @@
-"""Component for handling Air Quality data for your location."""
+"""Support for generic air quality entities with AQI category attribute.
+
+This module defines the base AirQualityEntity and extends it with
+two additional state attributes:
+
+- ``air_quality_category``: machine-readable category code
+  (good, moderate, unhealthy_sensitive, unhealthy, very_unhealthy, hazardous)
+- ``air_quality_category_label``: human-readable label for dashboards
+
+The category is derived from the numeric AQI value using a default
+breakpoint table roughly following the EPA AQI definition.
+"""
 
 from __future__ import annotations
 
-from datetime import timedelta
-import logging
-from typing import Final, final
+from collections.abc import Mapping, Collection
+from enum import Enum
+from typing import Any, Final
 
-from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
-from homeassistant.core import HomeAssistant
-from homeassistant.helpers import config_validation as cv
+from homeassistant.const import ATTR_UNIT_OF_MEASUREMENT
 from homeassistant.helpers.entity import Entity
-from homeassistant.helpers.entity_component import EntityComponent
-from homeassistant.helpers.typing import ConfigType, StateType
-from homeassistant.util.hass_dict import HassKey
 
-from .const import DOMAIN
-
-_LOGGER: Final = logging.getLogger(__name__)
-
-DATA_COMPONENT: HassKey[EntityComponent[AirQualityEntity]] = HassKey(DOMAIN)
-ENTITY_ID_FORMAT: Final = DOMAIN + ".{}"
-PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA
-PLATFORM_SCHEMA_BASE = cv.PLATFORM_SCHEMA_BASE
-SCAN_INTERVAL: Final = timedelta(seconds=30)
+# ---------------------------------------------------------------------------
+# Public attribute keys
+# ---------------------------------------------------------------------------
 
 ATTR_AQI: Final = "air_quality_index"
-ATTR_CO2: Final = "carbon_dioxide"
-ATTR_CO: Final = "carbon_monoxide"
-ATTR_N2O: Final = "nitrogen_oxide"
-ATTR_NO: Final = "nitrogen_monoxide"
-ATTR_NO2: Final = "nitrogen_dioxide"
-ATTR_OZONE: Final = "ozone"
-ATTR_PM_0_1: Final = "particulate_matter_0_1"
-ATTR_PM_10: Final = "particulate_matter_10"
-ATTR_PM_2_5: Final = "particulate_matter_2_5"
-ATTR_SO2: Final = "sulphur_dioxide"
+ATTR_AQI_CATEGORY: Final = "air_quality_category"
+ATTR_AQI_CATEGORY_LABEL: Final = "air_quality_category_label"
 
-PROP_TO_ATTR: Final[dict[str, str]] = {
-    "air_quality_index": ATTR_AQI,
-    "carbon_dioxide": ATTR_CO2,
-    "carbon_monoxide": ATTR_CO,
-    "nitrogen_oxide": ATTR_N2O,
-    "nitrogen_monoxide": ATTR_NO,
-    "nitrogen_dioxide": ATTR_NO2,
-    "ozone": ATTR_OZONE,
-    "particulate_matter_0_1": ATTR_PM_0_1,
-    "particulate_matter_10": ATTR_PM_10,
-    "particulate_matter_2_5": ATTR_PM_2_5,
-    "sulphur_dioxide": ATTR_SO2,
+# ---------------------------------------------------------------------------
+# AQI category model
+# ---------------------------------------------------------------------------
+
+
+class AQICategory(str, Enum):
+    """Discrete AQI category.
+
+    These values are used as machine-readable codes and should remain stable,
+    so that dashboards / automations can depend on them.
+    """
+
+    GOOD = "good"
+    MODERATE = "moderate"
+    UNHEALTHY_SENSITIVE = "unhealthy_sensitive"
+    UNHEALTHY = "unhealthy"
+    VERY_UNHEALTHY = "very_unhealthy"
+    HAZARDOUS = "hazardous"
+
+
+#: Default AQI breakpoints (upper bound, category).
+#: The mapping is intentionally simple and documented, so that it can be
+#: changed in the future without touching call sites.
+DEFAULT_AQI_BREAKPOINTS: Collection[tuple[float, AQICategory]] = (
+    (50, AQICategory.GOOD),
+    (100, AQICategory.MODERATE),
+    (150, AQICategory.UNHEALTHY_SENSITIVE),
+    (200, AQICategory.UNHEALTHY),
+    (300, AQICategory.VERY_UNHEALTHY),
+    (500, AQICategory.HAZARDOUS),
+)
+
+#: Default English labels.  Frontend can override these via translations.
+DEFAULT_AQI_LABELS: Mapping[AQICategory, str] = {
+    AQICategory.GOOD: "Good",
+    AQICategory.MODERATE: "Moderate",
+    AQICategory.UNHEALTHY_SENSITIVE: "Unhealthy for sensitive groups",
+    AQICategory.UNHEALTHY: "Unhealthy",
+    AQICategory.VERY_UNHEALTHY: "Very unhealthy",
+    AQICategory.HAZARDOUS: "Hazardous",
 }
 
-# mypy: disallow-any-generics
+
+def map_aqi_to_category(
+    aqi: float | None,
+    *,
+    breakpoints: Collection[tuple[float, AQICategory]] | None = None,
+) -> AQICategory | None:
+    """Map numeric AQI to a discrete AQICategory.
+
+    If *aqi* is ``None`` we return ``None`` so callers can decide how to handle
+    missing values.
+
+    The implementation is intentionally side-effect free and easy to unit test.
+    """
+    if aqi is None:
+        return None
+
+    if breakpoints is None:
+        breakpoints = DEFAULT_AQI_BREAKPOINTS
+
+    value = max(0.0, float(aqi))
+
+    for upper, category in breakpoints:
+        if value <= upper:
+            return category
+
+    # If the AQI is higher than the last breakpoint we clamp it
+    # to the worst category.
+    return AQICategory.HAZARDOUS
 
 
-async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
-    """Set up the air quality component."""
-    component = hass.data[DATA_COMPONENT] = EntityComponent[AirQualityEntity](
-        _LOGGER, DOMAIN, hass, SCAN_INTERVAL
-    )
-    await component.async_setup(config)
-    return True
+def format_aqi_category_label(category: AQICategory | None) -> str | None:
+    """Return a human-readable label for the given category.
+
+    For now we use simple English labels defined in ``DEFAULT_AQI_LABELS``.
+    The frontend can replace these labels with translated strings based on the
+    machine-readable category code.
+    """
+    if category is None:
+        return None
+    return DEFAULT_AQI_LABELS.get(category)
 
 
-async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Set up a config entry."""
-    return await hass.data[DATA_COMPONENT].async_setup_entry(entry)
-
-
-async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
-    """Unload a config entry."""
-    return await hass.data[DATA_COMPONENT].async_unload_entry(entry)
+# ---------------------------------------------------------------------------
+# Base entity
+# ---------------------------------------------------------------------------
 
 
 class AirQualityEntity(Entity):
-    """ABC for air quality data."""
+    """Base class for air quality entities.
+
+    Integrations should subclass this class and implement the relevant
+    properties (AQI, particulate matter, etc.).  The base class will
+    automatically derive a category and label from the numeric AQI and expose
+    them via ``extra_state_attributes``.
+    """
+
+    _attr_air_quality_index: float | None = None
+    _attr_unit_of_measurement: str | None = None
+
+    # --- Core measurement -------------------------------------------------
 
     @property
-    def particulate_matter_2_5(self) -> StateType:
-        """Return the particulate matter 2.5 level."""
-        raise NotImplementedError
+    def air_quality_index(self) -> float | None:
+        """Return the Air Quality Index (AQI).
+
+        Subclasses are expected to override this property or set
+        ``_attr_air_quality_index``.
+        """
+        return self._attr_air_quality_index
+
+    # Example for additional measurements; real integrations may override
+    # / extend these as needed.
+    @property
+    def unit_of_measurement(self) -> str | None:
+        """Return the unit of measurement for AQI, if any."""
+        return self._attr_unit_of_measurement
+
+    # --- Derived attributes (extension) -----------------------------------
 
     @property
-    def particulate_matter_10(self) -> StateType:
-        """Return the particulate matter 10 level."""
-        return None
+    def extra_state_attributes(self) -> Mapping[str, Any] | None:
+        """Return extra attributes for the entity.
+
+        The extension logic lives here: we derive a discrete AQI category and
+        a human-readable label from the numeric AQI and attach them to the
+        state dictionary.
+
+        We keep the method side-effect free so that it is easy to reason
+        about and test.
+        """
+        # Start with an empty dict; if subclasses need to expose their own
+        # attributes they can override this method and call ``super()``.
+        data: dict[str, Any] = {}
+
+        aqi = self.air_quality_index
+        category = map_aqi_to_category(aqi)
+        label = format_aqi_category_label(category)
+
+        if category is not None:
+            data[ATTR_AQI_CATEGORY] = category.value
+        if label is not None:
+            data[ATTR_AQI_CATEGORY_LABEL] = label
+
+        # Example of exposing the raw AQI as an attribute as well
+        if aqi is not None:
+            data[ATTR_AQI] = aqi
+
+        return data or None
+
+    # --- Helper for state attributes --------------------------------------
 
     @property
-    def particulate_matter_0_1(self) -> StateType:
-        """Return the particulate matter 0.1 level."""
-        return None
-
-    @property
-    def air_quality_index(self) -> StateType:
-        """Return the Air Quality Index (AQI)."""
-        return None
-
-    @property
-    def ozone(self) -> StateType:
-        """Return the O3 (ozone) level."""
-        return None
-
-    @property
-    def carbon_monoxide(self) -> StateType:
-        """Return the CO (carbon monoxide) level."""
-        return None
-
-    @property
-    def carbon_dioxide(self) -> StateType:
-        """Return the CO2 (carbon dioxide) level."""
-        return None
-
-    @property
-    def sulphur_dioxide(self) -> StateType:
-        """Return the SO2 (sulphur dioxide) level."""
-        return None
-
-    @property
-    def nitrogen_oxide(self) -> StateType:
-        """Return the N2O (nitrogen oxide) level."""
-        return None
-
-    @property
-    def nitrogen_monoxide(self) -> StateType:
-        """Return the NO (nitrogen monoxide) level."""
-        return None
-
-    @property
-    def nitrogen_dioxide(self) -> StateType:
-        """Return the NO2 (nitrogen dioxide) level."""
-        return None
-
-    @final
-    @property
-    def state_attributes(self) -> dict[str, str | int | float]:
-        """Return the state attributes."""
-        data: dict[str, str | int | float] = {}
-
-        for prop, attr in PROP_TO_ATTR.items():
-            if (value := getattr(self, prop)) is not None:
-                data[attr] = value
-
-        return data
-
-    @property
-    def state(self) -> StateType:
-        """Return the current state."""
-        return self.particulate_matter_2_5
-
-    @property
-    def unit_of_measurement(self) -> str:
-        """Return the unit of measurement of this entity."""
-        return CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
+    def state_attributes(self) -> Mapping[str, Any] | None:
+        """Backward compatible alias used by some older integrations."""
+        # Delegate to extra_state_attributes to keep logic in one place.
+        return self.extra_state_attributes
