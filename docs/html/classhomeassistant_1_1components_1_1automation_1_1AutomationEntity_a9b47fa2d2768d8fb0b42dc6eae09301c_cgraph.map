@@ -1,0 +1,9 @@
+<map id="homeassistant.components.automation.AutomationEntity._async_trigger_if_enabled" name="homeassistant.components.automation.AutomationEntity._async_trigger_if_enabled">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,62,291,117"/>
+<area shape="rect" id="Node000002" href="$classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity.html#abe095a64c7ac3b45a5088b4e8039c0c2" title=" " alt="" coords="348,5,633,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="291,60,369,45,370,50,292,65"/>
+<area shape="rect" id="Node000003" href="$classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity.html#aec9e6ad83cad4dc6a0b75d31621ac44f" title=" " alt="" coords="339,69,643,109"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="291,87,325,87,325,92,291,92"/>
+<area shape="rect" id="Node000004" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a61a94f4f7e9da5bafbc278589153eee6" title=" " alt="" coords="348,133,633,173"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="292,113,370,128,369,133,291,119"/>
+</map>

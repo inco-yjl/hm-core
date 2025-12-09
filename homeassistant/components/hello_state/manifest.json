@@ -1,0 +1,15 @@
+{
+  "domain": "hello_state",
+  "name": "Hello, state!",
+  "codeowners": ["@123jisi"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://www.home-assistant.io/integrations/hello_state",
+  "homekit": {},
+  "integration_type": "helper",
+  "iot_class": "calculated",
+  "quality_scale": "bronze",
+  "requirements": [],
+  "ssdp": [],
+  "zeroconf": []
+}

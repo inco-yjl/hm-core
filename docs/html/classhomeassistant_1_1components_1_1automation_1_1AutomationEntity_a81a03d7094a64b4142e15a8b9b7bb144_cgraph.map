@@ -1,0 +1,13 @@
+<map id="homeassistant.components.automation.AutomationEntity._async_attach_triggers" name="homeassistant.components.automation.AutomationEntity._async_attach_triggers">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,98,291,153"/>
+<area shape="rect" id="Node000002" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a9b47fa2d2768d8fb0b42dc6eae09301c" title=" " alt="" coords="339,62,624,117"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="291,107,325,104,326,109,291,113"/>
+<area shape="rect" id="Node000006" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a5ef4b774b2ff2c3f028f2c401f7f45f5" title=" " alt="" coords="339,141,624,181"/>
+<area shape="poly" id="edge5_Node000001_Node000006" title=" " alt="" coords="291,138,326,142,325,147,291,143"/>
+<area shape="rect" id="Node000003" href="$classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity.html#abe095a64c7ac3b45a5088b4e8039c0c2" title=" " alt="" coords="681,5,967,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="624,60,703,45,704,50,625,65"/>
+<area shape="rect" id="Node000004" href="$classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity.html#aec9e6ad83cad4dc6a0b75d31621ac44f" title=" " alt="" coords="672,69,976,109"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="624,87,658,87,658,92,624,92"/>
+<area shape="rect" id="Node000005" href="$classhomeassistant_1_1components_1_1automation_1_1AutomationEntity.html#a61a94f4f7e9da5bafbc278589153eee6" title=" " alt="" coords="681,133,967,173"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="625,113,704,128,703,133,624,119"/>
+</map>
