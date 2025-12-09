@@ -1,0 +1,9 @@
+<map id="homeassistant.components.automation.config.AutomationConfig" name="homeassistant.components.automation.config.AutomationConfig">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,183,333,223"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="125,87,171,113"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,125,168,182,163,183,151,126"/>
+<area shape="rect" id="Node000003" href="$classhomeassistant_1_1components_1_1automation_1_1config_1_1ValidationStatus.html" title=" " alt="" coords="196,80,524,120"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="313,129,206,185,204,180,311,124"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="321,5,399,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="363,44,363,80,357,80,357,44"/>
+</map>

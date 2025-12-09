@@ -1,0 +1,172 @@
+\doxysection{homeassistant.\+components.\+automation.\+Base\+Automation\+Entity Class Reference}
+\hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity}{}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity}\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+
+
+Inheritance diagram for homeassistant.\+components.\+automation.\+Base\+Automation\+Entity\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for homeassistant.\+components.\+automation.\+Base\+Automation\+Entity\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=301pt]{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+dict\mbox{[}str, Any\mbox{]}\texorpdfstring{$\vert$}{|}None \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a4d5159ab2ad258bee0bf36154f1d0a32}{capability\+\_\+attributes}} (self)
+\item 
+set\mbox{[}str\mbox{]} \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_afafec3f48973afaf3ace4f274a85767d}{referenced\+\_\+labels}} (self)
+\item 
+set\mbox{[}str\mbox{]} \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_ab4eb72531637eed48131a3605d2ecfa8}{referenced\+\_\+floors}} (self)
+\item 
+set\mbox{[}str\mbox{]} \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a374fc40a60893d7d67091d93ea97d2be}{referenced\+\_\+areas}} (self)
+\item 
+str\texorpdfstring{$\vert$}{|}None \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a9701bf3f0a8888c6c4baacf030d393fc}{referenced\+\_\+blueprint}} (self)
+\item 
+set\mbox{[}str\mbox{]} \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a02dccc428e981f0e0d8ffe80e2196c1d}{referenced\+\_\+devices}} (self)
+\item 
+set\mbox{[}str\mbox{]} \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a85467312107535bb04f63977f4898cc1}{referenced\+\_\+entities}} (self)
+\item 
+Script\+Run\+Result\texorpdfstring{$\vert$}{|}None \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_abe095a64c7ac3b45a5088b4e8039c0c2}{async\+\_\+trigger}} (self, dict\mbox{[}str, Any\mbox{]} run\+\_\+variables, Context\texorpdfstring{$\vert$}{|}None context=None, bool skip\+\_\+condition=False)
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a21374a49bd4eb5e629a1a2a04d534875}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a21374a49bd4eb5e629a1a2a04d534875} 
+Config\+Type {\bfseries raw\+\_\+config} \texorpdfstring{$\vert$}{|} None
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a551e7a53206333429108c15d7d085e8f}{\+\_\+entity\+\_\+component\+\_\+unrecorded\+\_\+attributes}}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyVerb}Base class for automation entities.\end{DoxyVerb}
+ 
+
+\doxysubsection{Member Function Documentation}
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_abe095a64c7ac3b45a5088b4e8039c0c2}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_abe095a64c7ac3b45a5088b4e8039c0c2} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!async\_trigger@{async\_trigger}}
+\index{async\_trigger@{async\_trigger}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{async\_trigger()}{async\_trigger()}}
+{\footnotesize\ttfamily  Script\+Run\+Result \texorpdfstring{$\vert$}{|} None homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+async\+\_\+trigger (\begin{DoxyParamCaption}\item[{}]{self,  }\item[{dict\mbox{[}str, Any\mbox{]}}]{run\+\_\+variables,  }\item[{Context \texorpdfstring{$\vert$}{|} None }]{context = {\ttfamily None},  }\item[{bool }]{skip\+\_\+condition = {\ttfamily False} }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Trigger automation.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_aec9e6ad83cad4dc6a0b75d31621ac44f}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_a61a94f4f7e9da5bafbc278589153eee6}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+Here is the caller graph for this function\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_abe095a64c7ac3b45a5088b4e8039c0c2_icgraph}
+\end{center}
+\end{figure}
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a4d5159ab2ad258bee0bf36154f1d0a32}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a4d5159ab2ad258bee0bf36154f1d0a32} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!capability\_attributes@{capability\_attributes}}
+\index{capability\_attributes@{capability\_attributes}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{capability\_attributes()}{capability\_attributes()}}
+{\footnotesize\ttfamily  dict\mbox{[}str, Any\mbox{]} \texorpdfstring{$\vert$}{|} None homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+capability\+\_\+attributes (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return capability attributes.\end{DoxyVerb}
+ \Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a374fc40a60893d7d67091d93ea97d2be}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a374fc40a60893d7d67091d93ea97d2be} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!referenced\_areas@{referenced\_areas}}
+\index{referenced\_areas@{referenced\_areas}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{referenced\_areas()}{referenced\_areas()}}
+{\footnotesize\ttfamily  set\mbox{[}str\mbox{]} homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+referenced\+\_\+areas (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a set of referenced areas.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_a91d396f4dc50feb4cc1c75c794225f3c}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_a22527a7c8414f9534fd34925d8b0061b}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a9701bf3f0a8888c6c4baacf030d393fc}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a9701bf3f0a8888c6c4baacf030d393fc} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!referenced\_blueprint@{referenced\_blueprint}}
+\index{referenced\_blueprint@{referenced\_blueprint}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{referenced\_blueprint()}{referenced\_blueprint()}}
+{\footnotesize\ttfamily  str \texorpdfstring{$\vert$}{|} None homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+referenced\+\_\+blueprint (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return referenced blueprint or None.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_a9005ef2cec015a494bd4efc57c936867}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_aa89ed6c4179a892fd3a30292150aef3d}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a02dccc428e981f0e0d8ffe80e2196c1d}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a02dccc428e981f0e0d8ffe80e2196c1d} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!referenced\_devices@{referenced\_devices}}
+\index{referenced\_devices@{referenced\_devices}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{referenced\_devices()}{referenced\_devices()}}
+{\footnotesize\ttfamily  set\mbox{[}str\mbox{]} homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+referenced\+\_\+devices (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a set of referenced devices.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_abc89965c3bd8ad22eb1934773b1c2d85}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_aa316e9aa31a7091c7aaa228c64dba03c}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a85467312107535bb04f63977f4898cc1}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a85467312107535bb04f63977f4898cc1} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!referenced\_entities@{referenced\_entities}}
+\index{referenced\_entities@{referenced\_entities}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{referenced\_entities()}{referenced\_entities()}}
+{\footnotesize\ttfamily  set\mbox{[}str\mbox{]} homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+referenced\+\_\+entities (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a set of referenced entities.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_aa046ab721617438345058957448a3aa7}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_a7631f6771818072556512582606049e2}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_ab4eb72531637eed48131a3605d2ecfa8}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_ab4eb72531637eed48131a3605d2ecfa8} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!referenced\_floors@{referenced\_floors}}
+\index{referenced\_floors@{referenced\_floors}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{referenced\_floors()}{referenced\_floors()}}
+{\footnotesize\ttfamily  set\mbox{[}str\mbox{]} homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+referenced\+\_\+floors (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a set of referenced floors.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_a6a00f7cf8d0edd05d0f4ce2bff919661}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_a70d8e71d9580a07354dc6105b7cfa2b8}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_afafec3f48973afaf3ace4f274a85767d}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_afafec3f48973afaf3ace4f274a85767d} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!referenced\_labels@{referenced\_labels}}
+\index{referenced\_labels@{referenced\_labels}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{referenced\_labels()}{referenced\_labels()}}
+{\footnotesize\ttfamily  set\mbox{[}str\mbox{]} homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+referenced\+\_\+labels (\begin{DoxyParamCaption}\item[{}]{self }\end{DoxyParamCaption})}
+
+\begin{DoxyVerb}Return a set of referenced labels.\end{DoxyVerb}
+ 
+
+Reimplemented in \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1UnavailableAutomationEntity_a252dead0e3cebaefae35f7f71b386cc3}{homeassistant.\+components.\+automation.\+Unavailable\+Automation\+Entity}}, and \mbox{\hyperlink{classhomeassistant_1_1components_1_1automation_1_1AutomationEntity_ad4524485155d62b2140a924b1875eae7}{homeassistant.\+components.\+automation.\+Automation\+Entity}}.
+
+
+
+\doxysubsection{Member Data Documentation}
+\Hypertarget{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a551e7a53206333429108c15d7d085e8f}\label{classhomeassistant_1_1components_1_1automation_1_1BaseAutomationEntity_a551e7a53206333429108c15d7d085e8f} 
+\index{homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}!\_entity\_component\_unrecorded\_attributes@{\_entity\_component\_unrecorded\_attributes}}
+\index{\_entity\_component\_unrecorded\_attributes@{\_entity\_component\_unrecorded\_attributes}!homeassistant.components.automation.BaseAutomationEntity@{homeassistant.components.automation.BaseAutomationEntity}}
+\doxysubsubsection{\texorpdfstring{\_entity\_component\_unrecorded\_attributes}{\_entity\_component\_unrecorded\_attributes}}
+{\footnotesize\ttfamily homeassistant.\+components.\+automation.\+Base\+Automation\+Entity.\+\_\+entity\+\_\+component\+\_\+unrecorded\+\_\+attributes\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [protected]}}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{=\ \ frozenset(}
+\DoxyCodeLine{\ \ \ \ \ \ \ \ (ATTR\_LAST\_TRIGGERED,\ ATTR\_MODE,\ ATTR\_CUR,\ ATTR\_MAX,\ CONF\_ID)}
+\DoxyCodeLine{\ \ \ \ )}
+
+\end{DoxyCode}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+homeassistant/components/automation/\+\_\+\+\_\+init\+\_\+\+\_\+.\+py\end{DoxyCompactItemize}

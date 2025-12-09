@@ -32,6 +32,7 @@ PLATFORM_SCHEMA = cv.PLATFORM_SCHEMA
 PLATFORM_SCHEMA_BASE = cv.PLATFORM_SCHEMA_BASE
 SCAN_INTERVAL: Final = timedelta(seconds=30)
 
+# ---- Original pollutant attribute constants ----
 ATTR_AQI: Final = "air_quality_index"
 ATTR_CO2: Final = "carbon_dioxide"
 ATTR_CO: Final = "carbon_monoxide"
@@ -43,6 +44,14 @@ ATTR_PM_0_1: Final = "particulate_matter_0_1"
 ATTR_PM_10: Final = "particulate_matter_10"
 ATTR_PM_2_5: Final = "particulate_matter_2_5"
 ATTR_SO2: Final = "sulphur_dioxide"
+
+# ---- New: AQI level related attributes ----
+# Machine readable level code：good / moderate / unhealthy_sensitive / unhealthy / very_unhealthy / hazardous
+ATTR_AQI_CATEGORY: Final = "air_quality_category"
+# User oriented readable tags, such as "Good", "Unhealthy for sensitive groups"
+ATTR_AQI_CATEGORY_LABEL: Final = "air_quality_category_label"
+# A pre assembled display string, such as "50 (Good)"
+ATTR_AQI_DISPLAY: Final = "air_quality_display"
 
 PROP_TO_ATTR: Final[dict[str, str]] = {
     "air_quality_index": ATTR_AQI,
@@ -57,6 +66,38 @@ PROP_TO_ATTR: Final[dict[str, str]] = {
     "particulate_matter_2_5": ATTR_PM_2_5,
     "sulphur_dioxide": ATTR_SO2,
 }
+
+# ---- New: AQI → Level Mapping Table (roughly referring to common AQI thresholds) ----
+# (Upper bound, machine code, text labels)
+_AQI_BREAKPOINTS: Final[tuple[tuple[float, str, str], ...]] = (
+    (50.0, "good", "Good"),
+    (100.0, "moderate", "Moderate"),
+    (150.0, "unhealthy_sensitive", "Unhealthy for sensitive groups"),
+    (200.0, "unhealthy", "Unhealthy"),
+    (300.0, "very_unhealthy", "Very unhealthy"),
+    (500.0, "hazardous", "Hazardous"),
+)
+
+
+def _classify_aqi(aqi: StateType) -> tuple[str | None, str | None]:
+    """Map numeric AQI to (category_code, human_readable_label)."""
+    if aqi is None:
+        return None, None
+
+    try:
+        value = float(aqi)
+    except (TypeError, ValueError):
+        return None, None
+
+    if value < 0:
+        value = 0.0
+
+    for upper, code, label in _AQI_BREAKPOINTS:
+        if value <= upper:
+            return code, label
+
+    return "hazardous", "Hazardous"
+
 
 # mypy: disallow-any-generics
 
@@ -220,18 +261,45 @@ class AirQualityEntity(Entity):
     @final
     @property
     def state_attributes(self) -> dict[str, str | int | float]:
-        """Return the state attributes."""
+        """Return the state attributes.
+
+        - Retain the original values of various pollutants（pm2.5、pm10、NO2 等）
+        - 额外提供：
+          - air_quality_category
+          - air_quality_category_label
+          - air_quality_display（例如 "50 (Good)"）
+        """
         data: dict[str, str | int | float] = {}
 
+        # 1) Original: Numerical attributes of pollutants
         for prop, attr in PROP_TO_ATTR.items():
             if (value := getattr(self, prop)) is not None:
                 data[attr] = value
+
+        # 2) New: AQI Classification
+        aqi = self.air_quality_index
+        category_code, category_label = _classify_aqi(aqi)
+
+        if category_code is not None:
+            data[ATTR_AQI_CATEGORY] = category_code
+        if category_label is not None:
+            data[ATTR_AQI_CATEGORY_LABEL] = category_label
+
+        # 3) New: Display string, such as "50 (Good)"
+        if aqi is not None or category_label is not None:
+            parts: list[str] = []
+            if aqi is not None:
+                parts.append(str(aqi))
+            if category_label is not None:
+                parts.append(f"({category_label})")
+            data[ATTR_AQI_DISPLAY] = " ".join(parts)
 
         return data
 
     @property
     def state(self) -> StateType:
         """Return the current state."""
+        # Maintain consistency with the original implementation: use pm2.5 as the main state
         return self.particulate_matter_2_5
 
     @property

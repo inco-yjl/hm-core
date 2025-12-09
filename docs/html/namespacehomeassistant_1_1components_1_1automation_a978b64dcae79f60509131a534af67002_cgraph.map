@@ -1,0 +1,14 @@
+<map id="homeassistant.components.automation._async_process_single_config" name="homeassistant.components.automation._async_process_single_config">
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,69,291,109"/>
+<area shape="rect" id="Node000002" href="$namespacehomeassistant_1_1components_1_1automation.html#acd6957af6a90a9107ec68c36b21f881c" title=" " alt="" coords="339,5,624,45"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="253,67,363,45,364,50,254,72"/>
+<area shape="rect" id="Node000004" href="$namespacehomeassistant_1_1components_1_1automation.html#a90ee7c3e2406213da10a283cf6bd8e28" title=" " alt="" coords="339,69,624,109"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="291,87,325,87,325,92,291,92"/>
+<area shape="rect" id="Node000006" href="$namespacehomeassistant_1_1components_1_1automation.html#af08a402b42d18948b120ee3194cb7825" title=" " alt="" coords="339,133,624,173"/>
+<area shape="poly" id="edge6_Node000001_Node000006" title=" " alt="" coords="254,107,364,128,363,133,253,112"/>
+<area shape="rect" id="Node000003" href="$namespacehomeassistant_1_1components_1_1automation.html#a60df83bc91d4c74ef3727510bab50c55" title=" " alt="" coords="672,5,957,45"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="624,23,659,23,659,28,624,28"/>
+<area shape="poly" id="edge5_Node000004_Node000003" title=" " alt="" coords="586,67,696,45,697,50,587,72"/>
+<area shape="rect" id="Node000005" href="$namespacehomeassistant_1_1components_1_1automation.html#a34ced62e921bad2f4a71667262ef2398" title=" " alt="" coords="672,69,957,109"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="624,87,659,87,659,92,624,92"/>
+</map>
