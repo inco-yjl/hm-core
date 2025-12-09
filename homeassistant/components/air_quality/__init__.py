@@ -72,6 +72,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     # Set up alert monitor
     alert_monitor = hass.data[DATA_ALERT_MONITOR] = AlertMonitor(hass)
 
+    # Read configuration from YAML
     domain_config_list = config.get(DOMAIN)
     if isinstance(domain_config_list, list):
 

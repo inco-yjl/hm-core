@@ -1,4 +1,15 @@
-"""Alert notification for air quality integration."""
+"""Alert notification for air quality integration.
+
+This module introduces an extensible alert system that evaluates air quality
+entity states against user-defined rules and dispatches notifications when an
+alert condition is met.
+
+Design overview:
+- AlertRule: Abstract interface for alert conditions (supports threshold rules).
+- NotificationHandler: Abstract interface for delivering alerts (notify service, logging, etc.).
+- AlertMonitor: Core engine that periodically evaluates rules and triggers notifications.
+
+"""
 
 from __future__ import annotations
 
@@ -28,9 +39,17 @@ class AlertContext:
     rule_type: str
 
 
-# 1. AlertRule
+# ---------------------------------------------------------------------------
+# Alert Rules
+# ---------------------------------------------------------------------------
+
 class AlertRule(ABC):
-    """Abstract base class for alert rules."""
+    """Abstract base class for alert rules.
+
+    Each rule implements two responsibilities:
+    1. evaluate(): Determines whether the alert condition is met.
+    2. get_alert_message(): Formats the alert message for users.
+    """
 
     @abstractmethod
     def evaluate(self, entity_state: State) -> Optional[AlertContext]:
@@ -42,14 +61,16 @@ class AlertRule(ABC):
 
 
 class ThresholdAlertRule(AlertRule):
-    """Threshold-based alert rule."""
+    """Threshold-based alert rule.
+    Rule that triggers when a pollutant exceeds a numeric threshold.
+    """
 
     def __init__(self, pollutant: str, threshold: float):
         self._pollutant = pollutant
         self._threshold = threshold
 
     def evaluate(self, entity_state: State) -> Optional[AlertContext]:
-        """Check if pollutant exceeds threshold."""
+        """Check if pollutant value exceeds threshold."""
         value = entity_state.attributes.get(self._pollutant)
         if value is not None and value > self._threshold:
             return AlertContext(
@@ -67,7 +88,10 @@ class ThresholdAlertRule(AlertRule):
         return f"【{entity_name}】{context.pollutant} exceeded threshold: {context.current_value} > {context.threshold}"
 
 
-# 2. NotificationHandler
+# ---------------------------------------------------------------------------
+# Notification Handlers
+# ---------------------------------------------------------------------------
+
 class NotificationHandler(ABC):
     """Abstract base class for notification handlers."""
 
@@ -78,10 +102,10 @@ class NotificationHandler(ABC):
     @property
     @abstractmethod
     def handler_type(self) -> str:
-        """Handler type identifier."""
+        """Return identifier of this handler."""
 
 class HassNotificationHandler(NotificationHandler):
-    """Home Assistant notification handler using notify service."""
+    """Home Assistant notification handler using Home Assistant's notify service."""
 
     def __init__(self, hass: HomeAssistant, notify_service_id: str):
         self.hass = hass
@@ -113,9 +137,19 @@ class LoggingNotificationHandler(NotificationHandler):
         _LOGGER.warning("🚨 AIR QUALITY ALERT TRIGGERED: %s", message)
 
 
-# 3. AlertMonitor
+# ---------------------------------------------------------------------------
+# Alert Monitor
+# ---------------------------------------------------------------------------
+
 class AlertMonitor:
-    """Monitor air quality entities for alert conditions."""
+    """Coordinates alert evaluation and notification dispatch.
+
+    Responsibilities:
+    - Tracks a target entity periodically and evaluates all registered alert rules.
+    - Applies cooldown to avoid redundant alerts.
+    - Sends alerts to all registered notification handlers.
+
+    """
 
     def __init__(self, hass: HomeAssistant):
         self.hass = hass
@@ -127,6 +161,8 @@ class AlertMonitor:
         self._remove_timer = None
         self._check_interval: timedelta = DEFAULT_CHECK_INTERVAL
         self._cooldown_time: timedelta = DEFAULT_COOLDOWN_TIME
+
+    # ---------------------- Configuration ----------------------
 
     def set_target_entity(self, entity_id: str):
         """Set target entity id."""
@@ -153,6 +189,8 @@ class AlertMonitor:
         """Set the alert cooldown time."""
         self._cooldown_time = interval
 
+    # ---------------------- Monitoring Lifecycle ----------------------
+
     async def start_monitoring(self):
         """Start alert monitoring."""
         if self._monitoring_active:
@@ -177,8 +215,10 @@ class AlertMonitor:
     def is_monitoring_active(self) -> bool:
         return self._monitoring_active
 
+    # ---------------------- Alert monitoring ----------------------
+
     def _setup_monitoring_timer(self):
-        """Set monitoring loop timer to check every 5 minutes (default)"""
+        """Schedule periodic checks via Home Assistant's event system."""
         if self._remove_timer:
             self._remove_timer()
 
@@ -187,7 +227,7 @@ class AlertMonitor:
         )
 
     async def _check_alerts(self, now=None):
-        """Check all entities for alert conditions."""
+        """Evaluate alert rules for the target entity."""
         if not self._monitoring_active or not self._target_entity_id:
             return
 
@@ -202,7 +242,7 @@ class AlertMonitor:
                 await self._trigger_alert(context, rule)
 
     def _should_trigger_alert(self, context: AlertContext) -> bool:
-        "Check if an alert should be triggered (to prevent duplicate alerts)."
+        "Determine whether an alert should be emitted based on cooldown (to prevent duplicate alerts)."
         cooldown_key = (
             f"{context.target_entity_id}_{context.pollutant}_{context.rule_type}"
         )
