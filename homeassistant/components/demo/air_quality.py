@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from datetime import timedelta
 import logging
+
 from homeassistant.components.air_quality import AirQualityEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -13,6 +14,7 @@ from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
 SCAN_INTERVAL = timedelta(seconds=3)
 _LOGGER = logging.getLogger(__name__)
 
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -20,7 +22,11 @@ async def async_setup_entry(
 ) -> None:
     """Set up the Demo config entry."""
     async_add_entities(
-        [DemoAirQuality("Home", 14, 23, 100), DemoAirQuality("Office", 4, 16, None), DemoAirQuality("Test", 8, 25, 100)]
+        [
+            DemoAirQuality("Home", 14, 23, 100),
+            DemoAirQuality("Office", 4, 16, None),
+            DemoAirQuality("Test", 8, 25, 100),
+        ]
     )
 
 
@@ -38,6 +44,7 @@ class DemoAirQuality(AirQualityEntity):
         self._pm_2_5 = pm_2_5
         self._pm_10 = pm_10
         self._n2o = n2o
+        self._increasing = True  # test
 
     @property
     def particulate_matter_2_5(self) -> int:
@@ -62,5 +69,14 @@ class DemoAirQuality(AirQualityEntity):
         if self._attr_name != "Demo Air Quality Test":
             return
 
-        self._pm_2_5 += 3
-        _LOGGER.info(f"Update demo PM2.5: {self._pm_2_5}")
+        if self._increasing:
+            self._pm_2_5 += 3
+            if self._pm_2_5 >= 40:
+                self._increasing = False
+
+        else:
+            self._pm_2_5 -= 3
+            if self._pm_2_5 <= 10:
+                self._increasing = True
+
+        _LOGGER.info("Update demo PM2.5: %s", self._pm_2_5)
