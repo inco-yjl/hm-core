@@ -1,4 +1,4 @@
-"""Alert notification for air quality integration.
+"""Alert monitor for air quality integration.
 
 This module introduces an extensible alert system that evaluates air quality
 entity states against user-defined rules and dispatches notifications when an

@@ -1,5 +1,5 @@
 
-# Air Quality - Alert Notification
+# Air Quality - Alert Monitor
 
 This feature extends the **Air Quality** integration by adding a flexible **Alert Monitoring System**. It allows users to define rules that trigger notifications when certain air-quality metrics exceed configured thresholds.
 
