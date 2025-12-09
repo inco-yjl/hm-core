@@ -14,18 +14,19 @@ Design overview:
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 import logging
-from typing import Any, Final, Optional
+from typing import Final
 
-from homeassistant.core import HomeAssistant, State, callback
-from homeassistant.helpers.entity import Entity
+from homeassistant.core import HomeAssistant, State
 from homeassistant.helpers.event import async_track_time_interval
 
 _LOGGER: Final = logging.getLogger(__name__)
 DEFAULT_CHECK_INTERVAL = timedelta(minutes=5)
 DEFAULT_COOLDOWN_TIME = timedelta(minutes=60)
+
 
 @dataclass
 class AlertContext:
@@ -43,6 +44,7 @@ class AlertContext:
 # Alert Rules
 # ---------------------------------------------------------------------------
 
+
 class AlertRule(ABC):
     """Abstract base class for alert rules.
 
@@ -52,7 +54,7 @@ class AlertRule(ABC):
     """
 
     @abstractmethod
-    def evaluate(self, entity_state: State) -> Optional[AlertContext]:
+    def evaluate(self, entity_state: State) -> AlertContext | None:
         """Evaluate if alert condition is met."""
 
     @abstractmethod
@@ -62,14 +64,16 @@ class AlertRule(ABC):
 
 class ThresholdAlertRule(AlertRule):
     """Threshold-based alert rule.
+
     Rule that triggers when a pollutant exceeds a numeric threshold.
     """
 
-    def __init__(self, pollutant: str, threshold: float):
+    def __init__(self, pollutant: str, threshold: float) -> None:
+        """Initialize."""
         self._pollutant = pollutant
         self._threshold = threshold
 
-    def evaluate(self, entity_state: State) -> Optional[AlertContext]:
+    def evaluate(self, entity_state: State) -> AlertContext | None:
         """Check if pollutant value exceeds threshold."""
         value = entity_state.attributes.get(self._pollutant)
         if value is not None and value > self._threshold:
@@ -84,7 +88,8 @@ class ThresholdAlertRule(AlertRule):
         return None
 
     def get_alert_message(self, context: AlertContext) -> str:
-        entity_name = context.target_entity_id.split('.')[-1]
+        """Return a formatted alert message for this threshold violation."""
+        entity_name = context.target_entity_id.split(".")[-1]
         return f"【{entity_name}】{context.pollutant} exceeded threshold: {context.current_value} > {context.threshold}"
 
 
@@ -92,11 +97,12 @@ class ThresholdAlertRule(AlertRule):
 # Notification Handlers
 # ---------------------------------------------------------------------------
 
+
 class NotificationHandler(ABC):
     """Abstract base class for notification handlers."""
 
     @abstractmethod
-    async def send_alert(self, message: str):
+    async def send_alert(self, message: str) -> None:
         """Send alert notification."""
 
     @property
@@ -104,25 +110,29 @@ class NotificationHandler(ABC):
     def handler_type(self) -> str:
         """Return identifier of this handler."""
 
+
 class HassNotificationHandler(NotificationHandler):
     """Home Assistant notification handler using Home Assistant's notify service."""
 
-    def __init__(self, hass: HomeAssistant, notify_service_id: str):
+    def __init__(self, hass: HomeAssistant, notify_service_id: str) -> None:
+        """Initialize."""
         self.hass = hass
         self._notify_service_id = notify_service_id
 
     @property
     def handler_type(self) -> str:
+        """Return handler type."""
         return f"hass_notify_{self._notify_service_id}"
 
-    async def send_alert(self, message: str):
+    async def send_alert(self, message: str) -> None:
         """Send alert notification via Home Assistant notify service."""
         await self.hass.services.async_call(
             "notify",
             self._notify_service_id,
             {"message": message, "title": "Air Quality Alert"},
-            blocking=False
+            blocking=False,
         )
+
 
 # test
 class LoggingNotificationHandler(NotificationHandler):
@@ -130,9 +140,10 @@ class LoggingNotificationHandler(NotificationHandler):
 
     @property
     def handler_type(self) -> str:
+        """Return handler type."""
         return "logging"
 
-    async def send_alert(self, message: str):
+    async def send_alert(self, message: str) -> None:
         """Send alert notification by logging the message."""
         _LOGGER.warning("🚨 AIR QUALITY ALERT TRIGGERED: %s", message)
 
@@ -140,6 +151,7 @@ class LoggingNotificationHandler(NotificationHandler):
 # ---------------------------------------------------------------------------
 # Alert Monitor
 # ---------------------------------------------------------------------------
+
 
 class AlertMonitor:
     """Coordinates alert evaluation and notification dispatch.
@@ -151,47 +163,50 @@ class AlertMonitor:
 
     """
 
-    def __init__(self, hass: HomeAssistant):
+    def __init__(self, hass: HomeAssistant) -> None:
+        """Initialize."""
         self.hass = hass
-        self._target_entity_id: Optional[str] = None
+        self._target_entity_id: str | None = None
         self._rules: list[AlertRule] = []
         self._notification_handlers: list[NotificationHandler] = []
         self._cooldown_periods: dict[str, datetime] = {}
         self._monitoring_active = False
-        self._remove_timer = None
+        self._remove_timer: Callable[[], None] | None = None
         self._check_interval: timedelta = DEFAULT_CHECK_INTERVAL
         self._cooldown_time: timedelta = DEFAULT_COOLDOWN_TIME
 
     # ---------------------- Configuration ----------------------
 
-    def set_target_entity(self, entity_id: str):
+    def set_target_entity(self, entity_id: str) -> None:
         """Set target entity id."""
         self._target_entity_id = entity_id
 
-    def add_rule(self, rule: AlertRule):
+    def add_rule(self, rule: AlertRule) -> None:
         """Add an alert rule to the monitor."""
         self._rules.append(rule)
         _LOGGER.debug("Added rule: %s", rule)
 
-    def add_notification_handler(self, handler: NotificationHandler):
+    def add_notification_handler(self, handler: NotificationHandler) -> None:
         """Add a notification handler to the monitor."""
         self._notification_handlers.append(handler)
         _LOGGER.debug("Added notification handler: %s", handler.handler_type)
 
-    def set_check_interval(self, interval: timedelta):
+    def set_check_interval(self, interval: timedelta) -> None:
         """Set the monitoring check interval."""
         if self._monitoring_active:
-             _LOGGER.warning("Cannot change check interval while monitoring is active. Restart required")
-             return
+            _LOGGER.warning(
+                "Cannot change check interval while monitoring is active. Restart required"
+            )
+            return
         self._check_interval = interval
 
-    def set_cooldown_time(self, interval: timedelta):
+    def set_cooldown_time(self, interval: timedelta) -> None:
         """Set the alert cooldown time."""
         self._cooldown_time = interval
 
     # ---------------------- Monitoring Lifecycle ----------------------
 
-    async def start_monitoring(self):
+    async def start_monitoring(self) -> None:
         """Start alert monitoring."""
         if self._monitoring_active:
             return
@@ -200,7 +215,7 @@ class AlertMonitor:
         self._setup_monitoring_timer()
         _LOGGER.info("Air quality alert monitoring started")
 
-    def stop_monitoring(self):
+    def stop_monitoring(self) -> None:
         """Stop alert monitoring."""
         if not self._monitoring_active:
             return
@@ -213,11 +228,12 @@ class AlertMonitor:
 
     @property
     def is_monitoring_active(self) -> bool:
+        """Return whether monitoring is currently active."""
         return self._monitoring_active
 
     # ---------------------- Alert monitoring ----------------------
 
-    def _setup_monitoring_timer(self):
+    def _setup_monitoring_timer(self) -> None:
         """Schedule periodic checks via Home Assistant's event system."""
         if self._remove_timer:
             self._remove_timer()
@@ -226,7 +242,7 @@ class AlertMonitor:
             self.hass, self._check_alerts, self._check_interval
         )
 
-    async def _check_alerts(self, now=None):
+    async def _check_alerts(self, now: datetime | None = None) -> None:
         """Evaluate alert rules for the target entity."""
         if not self._monitoring_active or not self._target_entity_id:
             return
@@ -254,7 +270,7 @@ class AlertMonitor:
         self._cooldown_periods[cooldown_key] = datetime.now()
         return True
 
-    async def _trigger_alert(self, context: AlertContext, rule: AlertRule):
+    async def _trigger_alert(self, context: AlertContext, rule: AlertRule) -> None:
         """Trigger alert notification."""
         message = rule.get_alert_message(context)
 
@@ -262,7 +278,7 @@ class AlertMonitor:
         for handler in self._notification_handlers:
             try:
                 await handler.send_alert(message)
-            except Exception as e:
+            except RuntimeError as e:
                 _LOGGER.error(
                     "Failed to send alert via %s: %s", handler.handler_type, e
                 )
