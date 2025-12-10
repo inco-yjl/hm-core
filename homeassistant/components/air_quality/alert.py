@@ -283,6 +283,19 @@ class AlertMonitor:
                     "Failed to send alert via %s: %s", handler.handler_type, e
                 )
 
+        #send to event bus (communicate with frontend)
+        self.hass.bus.fire(
+            "air_quality_alert",
+            {
+                "entity_id": context.target_entity_id,
+                "pollutant": context.pollutant,
+                "value": context.current_value,
+                "threshold": context.threshold,
+                "rule_type": context.rule_type,
+                "triggered_at": context.triggered_at.isoformat(),
+            },
+        )
+
     def is_monitoring_configured(self) -> bool:
         """Check if the configuration is complete."""
         return (
